@@ -1,4 +1,4 @@
-package tacos.controller;
+package tacos.web;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
-import tacos.data.Order;
-import tacos.repository.IngredientRepository;
-import tacos.data.Ingredient;
-import tacos.data.Ingredient.Type;
-import tacos.data.Taco;
-import tacos.repository.TacoRepository;
+import tacos.Order;
+import tacos.data.IngredientRepository;
+import tacos.Ingredient;
+import tacos.Ingredient.Type;
+import tacos.Taco;
+import tacos.data.TacoRepository;
 
 import javax.validation.Valid;
 
