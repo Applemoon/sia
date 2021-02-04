@@ -22,6 +22,7 @@ import java.util.Collections;
 public class User implements UserDetails {
 
     public static final long serialVersionUID = 1L;
+    public static final String ROLE = "USER";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -38,7 +39,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+        return Collections.singletonList(new SimpleGrantedAuthority(ROLE));
     }
 
     @Override
