@@ -1,7 +1,7 @@
 package tacos.web;
 
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 import tacos.Taco;
 import tacos.data.TacoRepository;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 @RestController
 @RequestMapping(path = "/design", produces = "application/json")
 @CrossOrigin(origins = "*")
@@ -26,10 +29,12 @@ public class DesignTacoController2 {
         this.tacoRepo = tacoRepo;
     }
 
-    public Iterable<Taco> recentTacos() {
-//        PageRequest page = PageRequest.of(0, 12, Sort.by("createdAt").descending());
-//        return tacoRepo.findAll(page).getContent();
-        return tacoRepo.findAll();
+    @GetMapping("/recent")
+    public HttpEntity<CollectionModel<Taco>> recentTacos() {
+        CollectionModel<Taco> tacos = CollectionModel.of(tacoRepo.findAll());
+        tacos.add(linkTo(methodOn(DesignTacoController2.class).recentTacos()).withSelfRel());
+
+        return new ResponseEntity<>(tacos, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
