@@ -2,27 +2,29 @@ package tacos.web;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import tacos.Ingredient;
+import tacos.Ingredient.Type;
+import tacos.Order;
+import tacos.Taco;
+import tacos.data.IngredientRepository;
+import tacos.data.TacoRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.SessionAttributes;
-import tacos.Order;
-import tacos.data.IngredientRepository;
-import tacos.Ingredient;
-import tacos.Ingredient.Type;
-import tacos.Taco;
-import tacos.data.TacoRepository;
-
-import javax.validation.Valid;
 
 @Slf4j
 @Controller
@@ -32,12 +34,12 @@ public class DesingTacoController {
 
     private final IngredientRepository ingredientRepo;
 
-    private final TacoRepository designRepo;
+    private final TacoRepository tacoRepo;
 
     @Autowired
-    public DesingTacoController(IngredientRepository ingredientRepo, TacoRepository designRepo) {
+    public DesingTacoController(IngredientRepository ingredientRepo, TacoRepository tacoRepo) {
         this.ingredientRepo = ingredientRepo;
-        this.designRepo = designRepo;
+        this.tacoRepo = tacoRepo;
     }
 
     @ModelAttribute(name = "order")
@@ -63,18 +65,20 @@ public class DesingTacoController {
         return "design";
     }
 
-    @PostMapping
-    public String processDesign(
-            @Valid @ModelAttribute("design") Taco design, Errors errors, @ModelAttribute Order order) {
-        if (errors.hasErrors()) {
-            log.info("Errors: " + errors);
-            return "design";
-        }
+    @PostMapping(consumes="application/json")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Mono<Taco> postTaco(@RequestBody Mono<Taco> tacoMono) {
+        return tacoRepo.saveAll(tacoMono).next();
+    }
 
-        log.info("Processing design: " + design);
-        Taco saved = designRepo.save(design);
-        order.addDesign(saved);
-        return "redirect:/orders/current";
+    @GetMapping("/{id}")
+    public Mono<Taco> tacoById(@PathVariable("id") Long id) {
+        return tacoRepo.findById(id);
+    }
+
+    @GetMapping("/recent")
+    public Flux<Taco> recentTacos() {
+        return tacoRepo.findAll().take(12);
     }
 
     private List<Ingredient> filterByType(List<Ingredient> ingredients, Type type) {
