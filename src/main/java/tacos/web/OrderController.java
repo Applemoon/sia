@@ -43,8 +43,8 @@ public class OrderController {
     }
 
     @PostMapping
-    public String processOrder(@Valid Order order, Errors errors,
-                               SessionStatus sessionStatus, @AuthenticationPrincipal User user) {
+    public String processOrder(@Valid Order order, Errors errors, SessionStatus sessionStatus,
+            @AuthenticationPrincipal User user) {
         if (errors.hasErrors()) {
             return "orderForm";
         }
@@ -56,7 +56,7 @@ public class OrderController {
         return "redirect:/";
     }
 
-    @PatchMapping(path="/{orderId}", consumes="application/json")
+    @PatchMapping(path = "/{orderId}", consumes = "application/json")
     public Order patchOrder(@PathVariable("orderId") Long orderId, @RequestBody Order patch) {
         Optional<Order> orderOpt = orderRepo.findById(orderId);
         Order order;
@@ -93,7 +93,7 @@ public class OrderController {
         return orderRepo.save(order);
     }
 
-    @DeleteMapping(path="/{orderId}")
+    @DeleteMapping(path = "/{orderId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteOrder(@PathVariable("orderId") Long orderId) {
         orderRepo.deleteById(orderId);

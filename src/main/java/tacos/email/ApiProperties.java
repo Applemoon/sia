@@ -8,5 +8,6 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "datacloud.api")
 @Component
 public class ApiProperties {
+
     private String url;
 }

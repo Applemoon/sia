@@ -57,15 +57,15 @@ public class DesingTacoController {
         List<Ingredient> ingredients = new ArrayList<>();
         ingredientRepo.findAll().forEach(ingredients::add);
 
-        for (Type type: Type.values()) {
+        for (Type type : Type.values()) {
             model.addAttribute(type.toString().toLowerCase(), filterByType(ingredients, type));
         }
-        model.addAttribute("design",  new Taco());
+        model.addAttribute("design", new Taco());
 
         return "design";
     }
 
-    @PostMapping(consumes="application/json")
+    @PostMapping(consumes = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
     public Mono<Taco> postTaco(@RequestBody Mono<Taco> tacoMono) {
         return tacoRepo.saveAll(tacoMono).next();

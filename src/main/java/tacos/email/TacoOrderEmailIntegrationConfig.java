@@ -18,8 +18,8 @@ public class TacoOrderEmailIntegrationConfig {
 
     @Bean
     public IntegrationFlow tacoOrderEmailFlow(EmailProperties emailProps,
-                                              EmailToOrderTransformer emailToOrderTransformer,
-                                              OrderSubmitMessageHandler orderSubmitMessageHandler) {
+            EmailToOrderTransformer emailToOrderTransformer,
+            OrderSubmitMessageHandler orderSubmitMessageHandler) {
         return IntegrationFlows
                 .from(Mail.imapInboundAdapter(emailProps.getImapUrl()),
                         e -> e.poller(Pollers.fixedDelay(emailProps.getPollRate())))

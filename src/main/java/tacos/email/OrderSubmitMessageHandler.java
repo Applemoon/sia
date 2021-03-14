@@ -7,6 +7,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Component
 public class OrderSubmitMessageHandler implements GenericHandler<Order4Email> {
+
     private final ApiProperties apiProps;
     private final RestTemplate rest;
 

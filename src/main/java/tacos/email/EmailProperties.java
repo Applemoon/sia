@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "tacocloud.email")
 @Component
 public class EmailProperties {
+
     private String username;
     private String password;
     private String host;
@@ -15,6 +16,8 @@ public class EmailProperties {
     private long pollRate = 30000;
 
     public String getImapUrl() {
-        return String.format("imaps://%s:%s@%s/%s", this.username, this.password, this.host, this.mailbox);
+        return String
+                .format("imaps://%s:%s@%s/%s", this.username, this.password, this.host,
+                        this.mailbox);
     }
 }

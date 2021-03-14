@@ -12,7 +12,8 @@ import javax.mail.MessagingException;
 public class EmailToOrderTransformer extends AbstractMailMessageTransformer<Order4Email> {
 
     @Override
-    protected AbstractIntegrationMessageBuilder<Order4Email> doTransform(Message message) throws Exception {
+    protected AbstractIntegrationMessageBuilder<Order4Email> doTransform(Message message)
+            throws Exception {
         Order4Email order = processPayload(message);
         return MessageBuilder.withPayload(order);
     }
