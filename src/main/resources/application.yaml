@@ -10,6 +10,9 @@ spring:
   data:
     rest:
       base-path: /api
+    cassandra:
+      keyspace-name: tacocloud
+      schema-action: recreate-drop-unused
 tacocloud:
   email:
     host: imap.tacocloud.com
