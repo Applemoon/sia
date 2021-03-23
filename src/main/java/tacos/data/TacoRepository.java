@@ -1,9 +1,9 @@
 package tacos.data;
 
 import java.util.UUID;
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import org.springframework.data.cassandra.repository.ReactiveCassandraRepository;
 import tacos.Taco;
 
-public interface TacoRepository extends ReactiveCrudRepository<Taco, UUID> {
+public interface TacoRepository extends ReactiveCassandraRepository<Taco, UUID> {
 
 }

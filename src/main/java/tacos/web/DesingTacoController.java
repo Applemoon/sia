@@ -1,5 +1,6 @@
 package tacos.web;
 
+import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -55,7 +56,7 @@ public class DesingTacoController {
     @GetMapping
     public String showDesignForm(Model model) {
         List<Ingredient> ingredients = new ArrayList<>();
-        ingredientRepo.findAll().forEach(ingredients::add);
+        ingredientRepo.findAll().map(ingredients::add);
 
         for (Type type : Type.values()) {
             model.addAttribute(type.toString().toLowerCase(), filterByType(ingredients, type));
@@ -72,7 +73,7 @@ public class DesingTacoController {
     }
 
     @GetMapping("/{id}")
-    public Mono<Taco> tacoById(@PathVariable("id") Long id) {
+    public Mono<Taco> tacoById(@PathVariable("id") UUID id) {
         return tacoRepo.findById(id);
     }
 

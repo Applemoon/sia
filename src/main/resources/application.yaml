@@ -13,6 +13,11 @@ spring:
     cassandra:
       keyspace-name: tacocloud
       schema-action: recreate-drop-unused
+      contact-points:
+      - 127.0.0.1:9042
+      local-datacenter: datacenter1
+  main:
+    allow-bean-definition-overriding: true
 tacocloud:
   email:
     host: imap.tacocloud.com
