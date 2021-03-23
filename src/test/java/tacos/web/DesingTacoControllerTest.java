@@ -10,7 +10,6 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import tacos.Ingredient;
-import tacos.IngredientUDT;
 import tacos.Taco;
 import tacos.data.IngredientRepository;
 import tacos.data.TacoRepository;
@@ -28,14 +27,14 @@ class DesingTacoControllerTest {
     @Test
     public void shouldReturnTacos() {
         Taco[] tacos = {
-                testTaco(UUID.fromString("1L")), testTaco(UUID.fromString("2L")),
-                testTaco(UUID.fromString("3L")), testTaco(UUID.fromString("4L")),
-                testTaco(UUID.fromString("5L")), testTaco(UUID.fromString("6L")),
-                testTaco(UUID.fromString("7L")), testTaco(UUID.fromString("8L")),
-                testTaco(UUID.fromString("9L")), testTaco(UUID.fromString("10L")),
-                testTaco(UUID.fromString("11L")), testTaco(UUID.fromString("12L")),
-                testTaco(UUID.fromString("13L")), testTaco(UUID.fromString("14L")),
-                testTaco(UUID.fromString("15L")), testTaco(UUID.fromString("16L"))};
+                testTaco("1L"), testTaco("2L"),
+                testTaco("3L"), testTaco("4L"),
+                testTaco("5L"), testTaco("6L"),
+                testTaco("7L"), testTaco("8L"),
+                testTaco("9L"), testTaco("10L"),
+                testTaco("11L"), testTaco("12L"),
+                testTaco("13L"), testTaco("14L"),
+                testTaco("15L"), testTaco("16L")};
         Flux<Taco> tacoFlux = Flux.just(tacos);
 
         IngredientRepository ingredientRepo = Mockito.mock(IngredientRepository.class);
@@ -58,7 +57,7 @@ class DesingTacoControllerTest {
     public void shouldSaveTaco() {
         Mono<Taco> unsavedTacoMono = Mono.just(testTaco(null));
         Taco savedTaco = testTaco(null);
-        savedTaco.setId(UUID.randomUUID());
+        savedTaco.setId("1");
         Mono<Taco> savedTacoMono = Mono.just(savedTaco);
 
         IngredientRepository ingredientRepo = Mockito.mock(IngredientRepository.class);
@@ -79,15 +78,15 @@ class DesingTacoControllerTest {
                     .isEqualTo(savedTaco);
     }
 
-    private Taco testTaco(UUID id) {
+    private Taco testTaco(String id) {
         Taco taco = new Taco();
         taco.setId(id);
         taco.setName("Taco " + id);
-        List<IngredientUDT> ingredients = new ArrayList<>();
+        List<Ingredient> ingredients = new ArrayList<>();
         ingredients.add(
-                new IngredientUDT("Ingredient A", Ingredient.Type.WRAP));
+                new Ingredient("INGA", "Ingredient A", Ingredient.Type.WRAP));
         ingredients.add(
-                new IngredientUDT("Ingredient B", Ingredient.Type.PROTEIN));
+                new Ingredient("INGB", "Ingredient B", Ingredient.Type.PROTEIN));
         taco.setIngredients(ingredients);
         return taco;
     }

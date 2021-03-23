@@ -1,6 +1,5 @@
 package tacos.web;
 
-import java.util.UUID;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.support.SessionStatus;
 import reactor.core.publisher.Mono;
 import tacos.Order;
 import tacos.User;
-import tacos.UserUDT;
 import tacos.data.OrderRepository;
 
 @Slf4j
@@ -51,16 +49,14 @@ public class OrderController {
         }
 
         log.info("Order submitted: " + order);
-        UserUDT userUDT = new UserUDT(user.getUsername(), user.getFullName(),
-                user.getPhoneNumber());
-        order.setUser(userUDT);
+        order.setUser(user);
         orderRepo.save(order);
         sessionStatus.setComplete();
         return "redirect:/";
     }
 
     @PatchMapping(path = "/{orderId}", consumes = "application/json")
-    public Mono<Order> patchOrder(@PathVariable("orderId") UUID orderId, @RequestBody Order patch) {
+    public Mono<Order> patchOrder(@PathVariable("orderId") String orderId, @RequestBody Order patch) {
         return orderRepo
                 .findById(orderId)
                 .map(order -> {
@@ -95,7 +91,7 @@ public class OrderController {
 
     @DeleteMapping(path = "/{orderId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteOrder(@PathVariable("orderId") UUID orderId) {
+    public void deleteOrder(@PathVariable("orderId") String orderId) {
         orderRepo.deleteById(orderId);
     }
 }

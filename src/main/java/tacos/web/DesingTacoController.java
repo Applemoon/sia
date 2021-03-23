@@ -73,7 +73,7 @@ public class DesingTacoController {
     }
 
     @GetMapping("/{id}")
-    public Mono<Taco> tacoById(@PathVariable("id") UUID id) {
+    public Mono<Taco> tacoById(@PathVariable("id") String id) {
         return tacoRepo.findById(id);
     }
 
