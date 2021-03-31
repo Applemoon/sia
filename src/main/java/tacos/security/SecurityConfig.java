@@ -2,37 +2,37 @@ package tacos.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
-import org.springframework.security.config.web.server.ServerHttpSecurity;
-import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.server.SecurityWebFilterChain;
-import tacos.User;
-import tacos.data.UserRepository;
 
 @Configuration
-@EnableWebFluxSecurity
-public class SecurityConfig {
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Bean
-    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity httpSecurity) {
-        return httpSecurity
-                .authorizeExchange()
-                    .pathMatchers("/design", "/orders").hasAuthority("USER")
-                    .anyExchange().permitAll()
-                .and().build();
-    }
-
-    @Bean
-    public ReactiveUserDetailsService userDetailsService(UserRepository userRepository) {
-        return username -> userRepository
-                .findByUsername(username)
-                .map(User::toUserDetails);
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+                .authorizeRequests()
+                    .antMatchers(HttpMethod.OPTIONS).permitAll() // needed for Angular/CORS
+                    .antMatchers(HttpMethod.POST, "/api/ingredients").permitAll()
+                    .antMatchers("/design", "/orders/**").permitAll()
+                    .antMatchers(HttpMethod.PATCH, "/ingredients").permitAll()
+                    .antMatchers("/**").access("permitAll")
+                .and().formLogin().loginPage("/login")
+                .and().httpBasic().realmName("Taco Cloud")
+                .and().logout().logoutSuccessUrl("/")
+                .and().csrf()
+                .ignoringAntMatchers("/h2-console/**", "/ingredients/**", "/design", "/orders/**",
+                        "/api/**")
+                .and().headers().frameOptions().sameOrigin(); // needed for H2-Console
     }
 
     @Bean
     public PasswordEncoder encoder() {
-        return NoOpPasswordEncoder.getInstance();
+        return new BCryptPasswordEncoder();
     }
 }
